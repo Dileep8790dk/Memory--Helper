@@ -1,4 +1,4 @@
-# File: .github/workflows/android_build.yml
+# File: .github/workflows/android_build.yml (FINAL CORRECTION)
 
 name: Build Kivy APK
 
@@ -22,11 +22,9 @@ jobs:
           wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
           sudo dpkg -i libtinfo5_6.3-2ubuntu0.1_amd64.deb
 
-      # 2. FIX: Clean the Build Cache (Fixes "Unknown command/target clean")
+      # 2. FIX: Clean the Buildozer Cache (Removes the failing hardcoded path)
       - name: Clean Buildozer Cache
-        run: |
-          # We run this outside the action to avoid the command parsing error.
-          /opt/hostedtoolcache/Python/3.8.18/x64/bin/buildozer clean
+        run: buildozer clean  # <--- ONLY USE THE COMMAND NAME
 
       # 3. FIX: Build the Android Debug APK (Fixes "Broken pipe")
       - name: Build Android Debug APK
@@ -42,4 +40,3 @@ jobs:
         with:
           name: ToDoApp-APK-Artifact
           path: bin/*.apk
-          
