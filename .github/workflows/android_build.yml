@@ -1,4 +1,4 @@
-# File: .github/workflows/android_build.yml (FINAL DEFINITIVE VERSION)
+# File: .github/workflows/android_build.yml (FINAL ATTEMPT: Manual Execution)
 
 name: Build Kivy APK
 
@@ -9,29 +9,38 @@ on:
 
 jobs:
   build:
+    # Set the timezone to prevent build date/time mismatches
+    env:
+      TZ: Asia/Kolkata
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 1. FIX: Install libtinfo5 Dependency
+      # 1. FIX: Install libtinfo5 Dependency (Required for older NDK support)
       - name: Install libtinfo5 Dependency Fix
         run: |
           echo "Installing legacy libtinfo5 package..."
           wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
           sudo dpkg -i libtinfo5_6.3-2ubuntu0.1_amd64.deb
 
-      # 2. FINAL BUILD STEP: Simplest successful wrapper for license acceptance.
-      # This is the single, most important command needed to fix the "Broken pipe" error.
-      - name: Build Android Debug APK
-        uses: digreatbrian/buildozer-action@v2
-        with:
-          # Use ONLY the core debug command, wrapped to force license acceptance.
-          buildozer-cmd: sh -c "yes | buildozer -v android debug"
-          python-version: 3.8
+      # 2. Install Buildozer Manually (Replaces the broken action)
+      - name: Install Buildozer Tool
+        run: pip install buildozer
 
-      # 3. Upload the resulting APK file as a downloadable artifact
+      # 3. EXECUTE FULL BUILD (The critical steps to fix Broken Pipe)
+      - name: Execute Full Android Debug Build
+        run: |
+          # The Broken Pipe fix: we use a raw shell pipe command for cleanup and build.
+          # This is the most stable way to force license acceptance.
+          echo "Running buildozer clean..."
+          yes | buildozer android clean
+          
+          echo "Running buildozer debug..."
+          yes | buildozer -v android debug
+          
+      # 4. Upload the resulting APK file as a downloadable artifact
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
