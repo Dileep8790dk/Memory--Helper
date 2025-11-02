@@ -18,9 +18,16 @@ requirements = python3,kivy,sqlite3
 # (str) Source code where the main.py lives - Points to your 'ToDoApp' subfolder
 source.dir = ToDoApp
 
-# CRITICAL FINAL FIX: Update NDK to the minimum supported version (25b)
-# This resolves the "minimum supported NDK version is 25" error.
+# CRITICAL FINAL FIXES:
+
+# 1. Locks the NDK to the required minimum version
 android.ndk = 25b
+
+# 2. Sets the Target Android API level (Modern requirement)
+android.api = 33
+
+# 3. Sets the Minimum Android API level (Required for stability with new NDKs)
+android.minapi = 24
 
 # (list) Permissions
 android.permissions = INTERNET
