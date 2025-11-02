@@ -1,4 +1,4 @@
-# File: .github/workflows/android_build.yml (FINAL CORRECTION)
+# File: .github/workflows/android_build.yml (DEFINITIVE FINAL VERSION)
 
 name: Build Kivy APK
 
@@ -22,11 +22,16 @@ jobs:
           wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
           sudo dpkg -i libtinfo5_6.3-2ubuntu0.1_amd64.deb
 
-      # 2. FIX: Clean the Buildozer Cache (Removes the failing hardcoded path)
-      - name: Clean Buildozer Cache
-        run: buildozer clean  # <--- ONLY USE THE COMMAND NAME
+      # 2. FIX: Install/Clean Toolchain (Fixes 'No such file' and 'Unknown command/target clean')
+      # This step forces the installation of Buildozer and runs the clean command safely.
+      - name: Install Toolchain and Clean Cache
+        uses: digreatbrian/buildozer-action@v2
+        with:
+          buildozer-cmd: buildozer clean
+          python-version: 3.8
 
       # 3. FIX: Build the Android Debug APK (Fixes "Broken pipe")
+      # This step runs the actual build, leveraging the clean slate from Step 2.
       - name: Build Android Debug APK
         uses: digreatbrian/buildozer-action@v2
         with:
