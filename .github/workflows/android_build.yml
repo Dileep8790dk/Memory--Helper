@@ -1,0 +1,39 @@
+# File: .github/workflows/android_build.yml
+
+name: Build Kivy APK
+
+# Run on every push to 'main' or when manually triggered
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # FIX: Install libtinfo5 Dependency (needed for older NDK)
+      - name: Install libtinfo5 Dependency Fix
+        run: |
+          echo "Installing legacy libtinfo5 package..."
+          wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
+          sudo dpkg -i libtinfo5_6.3-2ubuntu0.1_amd64.deb
+
+      # FINAL BUILD STEP: Uses shell wrapper for pipe command and forces a clean build
+      - name: Build Android Debug APK
+        uses: digreatbrian/buildozer-action@v2
+        with:
+          # This command fixes NDK conflict, Broken Pipe, and forces a fresh start.
+          buildozer-cmd: sh -c "yes | buildozer clean && buildozer -v android debug" 
+          python-version: 3.8
+
+      # Upload the resulting APK file as a downloadable artifact
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ToDoApp-APK-Artifact
+          path: bin/*.apk
