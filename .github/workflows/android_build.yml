@@ -22,15 +22,13 @@ jobs:
           wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
           sudo dpkg -i libtinfo5_6.3-2ubuntu0.1_amd64.deb
 
-      # 2. FINAL BUILD STEP: Combines all fixes into one command.
-      # - FIXES 'Broken pipe' with 'sh -c "yes | ..."'
-      # - FIXES 'Unknown command/target clean' by using 'android update' instead of 'clean'.
+      # 2. FINAL BUILD STEP: Simplest successful wrapper for license acceptance.
+      # This is the single, most important command needed to fix the "Broken pipe" error.
       - name: Build Android Debug APK
         uses: digreatbrian/buildozer-action@v2
         with:
-          # We run 'android update' followed by 'android debug'. This ensures licenses are accepted, 
-          # the environment is refreshed (like clean), and the build completes.
-          buildozer-cmd: sh -c "yes | buildozer -v android update && buildozer -v android debug"
+          # Use ONLY the core debug command, wrapped to force license acceptance.
+          buildozer-cmd: sh -c "yes | buildozer -v android debug"
           python-version: 3.8
 
       # 3. Upload the resulting APK file as a downloadable artifact
