@@ -1,0 +1,104 @@
+#:import rgba kivy.utils.get_color_from_hex
+
+<TaskCard@BoxLayout>:
+    size_hint_y: None
+    height: 70
+    spacing: 10
+    padding: 10
+    canvas.before:
+        Color:
+            rgba: rgba("#FFFFFF")
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [15]
+    Label:
+        text: root.text
+        color: 0,0,0,1
+        font_size: 18
+        halign: 'left'
+    Button:
+        text: "✔ Done"
+        size_hint_x: None
+        width: 90
+        background_color: 0,0,0,0
+        color: rgba("#00A86B")
+        on_release: app.complete_task(root.text)
+    Button:
+        text: "🗑 Delete"
+        size_hint_x: None
+        width: 100
+        background_color: 0,0,0,0
+        color: rgba("#E63946")
+        on_release: app.remove_task(root.text)
+
+BoxLayout:
+    orientation: 'vertical'
+    # Background gradient effect
+    canvas.before:
+        Color:
+            rgba: rgba("#a0c4ff")
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: rgba("#bdb2ff")
+        Rectangle:
+            pos: self.x, self.y, self.width, self.height/2
+
+    Label:
+        text: "Playful To-Do List"
+        font_size: 32
+        color: 0,0,0,1
+        size_hint_y: None
+        height: 60
+
+    BoxLayout:
+        size_hint_y: None
+        height: 60
+        padding: 10
+        spacing: 10
+        TextInput:
+            id: task_input
+            hint_text: "Enter a new task..."
+            font_size: 18
+            multiline: False
+        TextInput:
+            id: reminder_input
+            hint_text: "HH:MM (24hr)"
+            font_size: 18
+            multiline: False
+            size_hint_x: None
+            width: 120
+        Button:
+            text: "Add"
+            size_hint_x: None
+            width: 100
+            background_color: rgba("#FFD166")
+            color: 0,0,0,1
+            on_release: app.add_task()
+
+    ScrollView:
+        GridLayout:
+            id: task_list
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height
+            padding: [10,10]
+            spacing: 10
+
+    BoxLayout:
+        size_hint_y: None
+        height: 70
+        padding: [10,10]
+        spacing: 10
+        Button:
+            text: "Delete All"
+            background_color: rgba("#FFADAD")
+            color: 0,0,0,1
+            on_release: app.delete_all()
+        Button:
+            text: "Exit"
+            background_color: rgba("#FFD166")
+            color: 0,0,0,1
+            on_release: app.stop()
