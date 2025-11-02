@@ -18,8 +18,9 @@ requirements = python3,kivy,sqlite3
 # (str) Source code where the main.py lives - Points to your 'ToDoApp' subfolder
 source.dir = ToDoApp
 
-# CRITICAL FIX: Locks the NDK to a stable version (r21b) to prevent build failures
-android.ndk = 21b
+# CRITICAL FINAL FIX: Update NDK to the minimum supported version (25b)
+# This resolves the "minimum supported NDK version is 25" error.
+android.ndk = 25b
 
 # (list) Permissions
 android.permissions = INTERNET
